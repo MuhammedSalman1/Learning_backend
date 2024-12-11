@@ -18,7 +18,7 @@ const userSchema = new Schema(
     lowercase : true,
     trim :true,
   
-  },  fullname :{
+  },  fullName :{
     type : String,
     required : true,
     trim :true,
@@ -60,18 +60,33 @@ type :String
   
  }
  userSchema.methods.generateAccessToken = function () {
-  jwt.sign(
+   return jwt.sign(
     {
       _id: this._id,
       email: this.email,
       username : this.username,
-      fullname :this.Fullname
+      fullName :this.FullName
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+     expiresIn: process.env.ACCESS_TOKEN_EXPIRY
     }
   )
   
  }
  userSchema.methods.generateRefreshToken = function () {
-  
+  return jwt.sign(
+    {
+      _id: this._id,
+      email: this.email,
+      username : this.username,
+      fullName :this.FullName
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+     expiresIn: process.env.REFRESH_TOKEN_EXPIRY
+    }
+  )
  }
 
 export const User = mongoose.model("User",userSchema)
